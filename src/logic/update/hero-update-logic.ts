@@ -1,5 +1,6 @@
 import { AbilityUpdateLogic } from './ability-update-logic';
 import { FeatureType } from '../../enums/feature-type';
+import { FeatureChoiceData } from '../../models/feature';
 import { FeatureUpdateLogic } from './feature-update-logic';
 import { Hero } from '../../models/hero';
 import { HeroLogic } from '../hero-logic';
@@ -23,6 +24,14 @@ export class HeroUpdateLogic {
 
 		if (hero.ancestry) {
 			hero.ancestry.features.forEach(FeatureUpdateLogic.updateFeature);
+
+			// Revenant: 3 ancestry points if small, otherwise 2
+			if (hero.ancestry.id === 'ancestry-revenant') {
+				const traits = hero.ancestry.features.find(f => f.id === 'revenant-feature-4');
+				if (traits && traits.type === FeatureType.Choice) {
+					(traits.data as unknown as FeatureChoiceData).count = (HeroLogic.getSize(hero).mod === 'S') ? 3 : 2;
+				}
+			}
 		}
 
 		if (hero.career) {
@@ -104,6 +113,11 @@ export class HeroUpdateLogic {
 
 		if (hero.state.encounterState === undefined) {
 			hero.state.encounterState = 'ready';
+		}
+
+		const heroStateUntyped = hero.state as unknown as { reactionUsed?: boolean };
+		if (heroStateUntyped.reactionUsed === undefined) {
+			hero.state.reactionUsed = false;
 		}
 
 		if (hero.state.defeated === undefined) {

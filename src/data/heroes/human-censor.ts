@@ -2268,6 +2268,7 @@ export const humanCensor = {
 		projects: [],
 		controlledSlots: [],
 		notes: '',
+		reactionUsed: false,
 		encounterState: 'ready',
 		hidden: false,
 		defeated: false

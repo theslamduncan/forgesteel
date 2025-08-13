@@ -102,6 +102,7 @@ export class FactoryLogic {
 			projects: [],
 			controlledSlots: [],
 			notes: '',
+			reactionUsed: false,
 			encounterState: 'ready',
 			hidden: false,
 			defeated: false
