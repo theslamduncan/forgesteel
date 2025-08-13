@@ -115,6 +115,15 @@ export const HeroHealthPanel = (props: HeroProps) => {
 		}
 	};
 
+	const setReactionUsed = (value: boolean) => {
+		const copy = Utils.copy(hero);
+		copy.state.reactionUsed = value;
+		setHero(copy);
+		if (props.onChange) {
+			props.onChange(copy);
+		}
+	};
+
 	const setDefeated = (value: boolean) => {
 		const copy = Utils.copy(hero);
 		copy.state.defeated = value;
@@ -184,6 +193,10 @@ export const HeroHealthPanel = (props: HeroProps) => {
 					recoveryValue: HeroLogic.getRecoveryValue(hero),
 					setValue: setRecoveriesUsed,
 					spendRecovery: spendRecovery
+				}}
+				reaction={{
+					value: hero.state.reactionUsed,
+					setValue: setReactionUsed
 				}}
 				hidden={{
 					value: hero.state.hidden,
@@ -295,6 +308,15 @@ export const MonsterHealthPanel = (props: MonsterProps) => {
 		}
 	};
 
+	const setReactionUsed = (value: boolean) => {
+		const copy = Utils.copy(monster);
+		copy.state.reactionUsed = value;
+		setMonster(copy);
+		if (props.onChange) {
+			props.onChange(copy);
+		}
+	};
+
 	const setDefeated = (value: boolean) => {
 		const copy = Utils.copy(monster);
 		copy.state.defeated = value;
@@ -373,6 +395,10 @@ export const MonsterHealthPanel = (props: MonsterProps) => {
 						}
 						: undefined
 				}
+				reaction={{
+					value: monster.state.reactionUsed,
+					setValue: setReactionUsed
+				}}
 				hidden={{
 					value: monster.state.hidden,
 					setValue: setHidden
@@ -455,6 +481,15 @@ export const MinionGroupHealthPanel = (props: MinionGroupProps) => {
 		}
 	};
 
+	const setReactionUsed = (value: boolean) => {
+		const copy = Utils.copy(slot);
+		copy.state.reactionUsed = value;
+		setSlot(copy);
+		if (props.onChange) {
+			props.onChange(copy);
+		}
+	};
+
 	const addCondition = (condition: Condition) => {
 		const copy = Utils.copy(slot);
 		copy.state.conditions.push(condition);
@@ -499,6 +534,10 @@ export const MinionGroupHealthPanel = (props: MinionGroupProps) => {
 					setValue: setStaminaDamage,
 					takeDamage: takeDamage,
 					heal: heal
+				}}
+				reaction={{
+					value: slot.state.reactionUsed,
+					setValue: setReactionUsed
 				}}
 				defeated={{
 					value: slot.state.defeated,
@@ -550,6 +589,10 @@ interface Props {
 		setValue: (value: number) => void;
 		spendRecovery: () => void;
 	}
+	reaction?: {
+		value: boolean;
+		setValue: (value: boolean) => void;
+	};
 	hidden?: {
 		value: boolean;
 		setValue: (value: boolean) => void;
@@ -771,6 +814,9 @@ const HealthPanel = (props: Props) => {
 			if (props.hidden && props.hidden.value) {
 				tags.push('Hidden');
 			}
+			if (props.reaction && props.reaction.value) {
+				tags.push('Reaction');
+			}
 			if (props.captain && props.captain.captainID) {
 				const captain = props.captain.candidates.find(m => m.id === props.captain!.captainID);
 				if (captain) {
@@ -852,7 +898,7 @@ Your allies can help you spend Recoveries in combat, and you can spend Recoverie
 						: null
 				}
 				{
-					props.showToggles && (props.hidden || props.defeated || props.captain) ?
+					props.showToggles && (props.hidden || props.defeated || props.captain || props.reaction) ?
 						<>
 							<Flex align='center' justify='space-evenly' gap={10} style={{ margin: '10px 0' }}>
 								{
@@ -867,6 +913,22 @@ Your allies can help you spend Recoveries in combat, and you can spend Recoverie
 												]}
 												value={props.hidden.value}
 												onChange={props.hidden.setValue}
+											/>
+										</div>
+										: null
+								}
+								{
+									props.reaction ?
+										<div className='toggle-button'>
+											<div className='toggle-button-label'>Reaction</div>
+											<Segmented
+												block={true}
+												options={[
+													{ value: true, label: 'Used' },
+													{ value: false, label: 'Available' }
+												]}
+												value={props.reaction.value}
+												onChange={props.reaction.setValue}
 											/>
 										</div>
 										: null

@@ -26,6 +26,7 @@ export interface HeroState {
 	projects: Project[];
 	controlledSlots: EncounterSlot[];
 	notes: string;
+	reactionUsed: boolean;
 	hidden: boolean;
 	encounterState: 'ready' | 'current' | 'finished';
 	defeated: boolean;
